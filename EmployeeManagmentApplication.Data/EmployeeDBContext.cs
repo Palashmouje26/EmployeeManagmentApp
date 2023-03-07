@@ -14,6 +14,9 @@ namespace EmployeeManagmentApplication.Data
         }
         public DbSet<Employee> Employee { get; set; }
         public DbSet<SalaryModule> SalaryModule { get; set; }
+
+        public DbSet<PaymentSlip> PaymentSlip { get; set; }
+    
         public string ContentRootPath { get; internal set; }
     }
 }

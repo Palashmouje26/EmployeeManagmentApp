@@ -9,8 +9,10 @@ namespace EmployeeManagmentApplication.Modal
 {
     public class Employee
     {
+     
         [Key]
         public int EmployeeId { get; set; }
+        
         [Required]
 
         [RegularExpression(@"^[a-zA-Z''-'\s]{1,40}$",
