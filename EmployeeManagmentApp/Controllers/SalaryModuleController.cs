@@ -5,6 +5,7 @@ using EmployeeManagmentApplication.Repository;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,10 +33,15 @@ namespace EmployeeManagmentApplication.Controllers
 
 
         [HttpGet]
-        [Route("GetSalaryModuole")]
-        public async Task<IActionResult> Get()
+        [Route("GetSalaryModule")]
+        //public async Task<ActionResult<IEnumerable<SalaryModule>>> GetSalaryModule()
+        //{
+        //    return await _SalaryDataRepository.GetSalaryModule();
+        //}
+        //public async Task<IActionResult> GetSalaryModule()
+        public async Task<ActionResult<IEnumerable<SalaryModule>>> GetSalaryModule()
         {
-            return Ok(await _SalaryModuleRepository.GetSalaryModule());
+            return Ok(await _SalaryDataRepository.GetSalaryModule());
         }
 
         [HttpGet]
@@ -44,7 +50,7 @@ namespace EmployeeManagmentApplication.Controllers
 
         public async Task<IActionResult> GetDeptById(int Id)
         {
-            return Ok(await _SalaryModuleRepository.GetSalaryModuleByID(Id));
+            return Ok(await _SalaryDataRepository.GetSalaryModuleByID(Id));
         }
 
         [HttpPost]
@@ -83,7 +89,22 @@ namespace EmployeeManagmentApplication.Controllers
         [Route("UpdateSalaryModuole")]
         public async Task<IActionResult> Put(SalaryModule salaryModule)
         {
-            await _SalaryModuleRepository.UpdateSalary(salaryModule);
+            var HRA = salaryModule.Basic + 1000;
+            var DA = salaryModule.Basic * 10 / 100;
+            var PT = 200;
+            var Deduction = salaryModule.Basic - PT;
+            var NetSalary = (salaryModule.Basic + HRA) + (DA - Deduction);
+            var salaryDetal = new SalaryModule
+            {
+                EmployeeId = salaryModule.EmployeeId,
+                Basic = salaryModule.Basic,
+                HRA = HRA,
+                PT = PT,
+                DA = DA,
+                Deduction = Deduction,
+                NetSalary = NetSalary,
+            };
+            await _SalaryDataRepository.UpdateSalary(salaryDetal);
             return Ok("Updated Successfully");
         }
 
@@ -92,19 +113,19 @@ namespace EmployeeManagmentApplication.Controllers
         [Route("DeleteSalaryModuole")]
         public JsonResult Delete(int id)
         {
-            _SalaryModuleRepository.DeleteSalaryModule(id);
+            _SalaryDataRepository.DeleteSalaryModule(id);
             return new JsonResult("Deleted Successfully");
         }
 
-        [HttpGet]
+        //[HttpGet]
 
-        [Route("GetPaySlip")]
-        public async Task<ActionResult<IEnumerable<SalaryModule>>> GetSalaryModule ()
-       
-        {
-            var x = await _SalaryDataRepository.GetSalaryModule();
-            return Ok(x.ToList());
-        }
+        //[Route("GetPaySlip")]
+        //public async Task<ActionResult<IEnumerable<SalaryModule>>> GetSalaryModule()
+
+        //{
+        //    var x = await _SalaryDataRepository.GetSalaryModule();
+        //    return Ok(x.ToList());
+        //}
 
     }
 }

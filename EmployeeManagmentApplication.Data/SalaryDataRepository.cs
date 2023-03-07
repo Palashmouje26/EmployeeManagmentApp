@@ -1,6 +1,8 @@
 ﻿using EmployeeManagmentApplication.Modal;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,29 +17,48 @@ namespace EmployeeManagmentApplication.Data
         }
         public bool DeleteSalaryModule(int ID)
         {
-            throw new NotImplementedException();
+            bool result = false;
+            var department = _DBContext.SalaryModule.Find(ID);
+            if (department != null)
+            {
+                _DBContext.Entry(department).State = EntityState.Deleted;
+                _DBContext.SaveChanges();
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
+            return result;
         }
 
-        public Task<IEnumerable<SalaryModule>> GetSalaryModule()
+        public async Task<IEnumerable<SalaryModule>> GetSalaryModule()
         {
-            throw new NotImplementedException();
+            return await _DBContext.SalaryModule.ToListAsync();
         }
 
-        public Task<SalaryModule> GetSalaryModuleByID(int ID)
+        public async Task<SalaryModule> GetSalaryModuleByID(int ID)
         {
-            throw new NotImplementedException();
+            return await _DBContext.SalaryModule.FindAsync(ID);
+           // return _DBContext.SalaryModule.Where(x => x.SalaryId == ID).FirstOrDefault();
         }
 
-        public async  Task<SalaryModule> InsertSalary(SalaryModule SalaryModule)
+
+
+        public async Task<SalaryModule> InsertSalary(SalaryModule SalaryModule)
         {
             _DBContext.SalaryModule.Add(SalaryModule);
             await _DBContext.SaveChangesAsync();
             return SalaryModule;
         }
 
-        public Task<SalaryModule> UpdateSalary(SalaryModule SalaryModule)
+
+        public async Task<SalaryModule> UpdateSalary( SalaryModule salaryModule)
         {
-            throw new NotImplementedException();
+            _DBContext.Entry(salaryModule).State = EntityState.Modified;
+            await _DBContext.SaveChangesAsync();
+            return salaryModule;
         }
+
     }
 }
